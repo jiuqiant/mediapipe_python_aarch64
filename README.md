@@ -55,43 +55,7 @@
     sed -i -e "/-ljpeg/d;/-lpng/d;/-ltiff/d;/-lImath/d;/-lIlmImf/d;/-lHalf/d;/-lIex/d;/-lIlmThread/d;/-lrt/d;/-ldc1394/d;/-lavcodec/d;/-lavformat/d;/-lavutil/d;/-lswscale/d;/-lavresample/d" third_party/BUILD
     ```
 
-6.  Remove opencv-python from requirements.txt.
-
-    ```
-    diff --git a/requirements.txt b/requirements.txt
-    index cee4e45..84617cb 100644
-    --- a/requirements.txt
-    +++ b/requirements.txt
-    @@ -1,7 +1,6 @@
-     absl-py
-     dataclasses
-    -numpy == 1.19.3
-    -opencv-python
-    +numpy
-     protobuf>=3.11.4
-     six
-     wheel
-    ```
-
-7.  Remove drawing_utils from `__init__.py` since opencv-python is not available
-    on aarch64 Linux.
-
-    ```
-    --- a/mediapipe/python/solutions/__init__.py
-    +++ b/mediapipe/python/solutions/__init__.py
-    @@ -14,7 +14,8 @@
-
-     """MediaPipe Solutions Python API."""
-
-     -import mediapipe.python.solutions.drawing_utils
-     +# Disable when opencv-python is not available.
-     +# import mediapipe.python.solutions.drawing_utils
-     import mediapipe.python.solutions.face_mesh
-     import mediapipe.python.solutions.hands
-     import mediapipe.python.solutions.holistic
-    ```
-
-8.  Disable carotene_o4t in `third_party/BUILD`.
+6.  Disable carotene_o4t in `third_party/BUILD`.
 
     ```
     diff --git a/third_party/BUILD b/third_party/BUILD
@@ -106,7 +70,7 @@
     +   "WITH_TENGINE": "OFF",
     ```
 
-9.  Build the package.
+7.  Build the package.
 
     ```bash
     ~/mediapipe$ python3 setup.py gen_protos && python3 setup.py bdist_wheel
@@ -122,7 +86,7 @@
     ~$ python3 -m pip install pillow
     ~$ python3 -m pip install mediapipe/dist/mediapipe-0.8-cp38-cp38-linux_aarch64.whl
     or 
-    ~$ python3 -m pip install mediapipe-python-aarch64/mediapipe-0.8.1-cp38-cp38-linux_aarch64.whl
+    ~$ python3 -m pip install mediapipe-python-aarch64/mediapipe-0.8.4-cp38-cp38-linux_aarch64.whl
     ```
 
     Append `--no-deps` flag if any dependency Python packages cannot be installed.
